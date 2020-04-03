@@ -1,0 +1,32 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}Proyectos{% endblock %}
+{% block main-content %}
+{% if not request.user.is_authenticated %}
+    <script>window.location.href = 'registration:signup'; </script>
+  {% endif %}
+{% include 'projects/includes/projects_menu.html' %}
+{% if request.user.is_authenticated %}
+<main role="main">
+  <div class="container mb-4">
+    {% for project in project_list|dictsort:"id" reversed %}
+      <div class="row mt-3">
+        <div class="col-md-9 mx-auto">
+          <h2 class="mb-4">{{project.title}}</h2>
+          <div>
+            <p>{{project.description|striptags|safe|truncatechars:"200"}} ({{project.ecuacion_set.count}} ecuaciones, con {{project.ecuacion_set.patentes_set.count}} patentes)</p>
+            <p><a href="{% url 'projects:project' project.id %}">Ver</a>
+                | <a href="{% url 'projects:update' project.id %}">Editar</a>
+                | <a href="{% url 'projects:delete' project.id %}">Borrar</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</main>
+{% else %}
+
+{% endif%}
+
+{% endblock %}

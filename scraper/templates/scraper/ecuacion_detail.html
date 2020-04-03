@@ -1,0 +1,63 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{ecu.ecuacion}}{% endblock %}
+{% block main-content %}
+
+{% include 'scraper/includes/resultados_menu.html' %}
+<main role="main">
+  <div class="container">
+    <div class="row mt-1">
+      <div class="col-md-20 mx-auto">
+        <h5 class="section-heading mb-4">{{ecu.ecuacion}}</h5>
+        <div>
+          <div style="margin-left:0px;margin-top:5px">
+            
+            {% for tes in patente %}
+              <hr>
+               <p class="text-muted">
+               <strong>Titulo:</strong> <a href="{% url 'patentes:patentes_detail' tes.patente.id  %}">{{tes.patente.titulo_patente}}</a>
+                <strong>, Nro:</strong>  {{tes.num_pat_pais.cod_pais}}{{tes.cod_serie_patente}}
+                <strong>, Pais:</strong>  {{tes.num_pat_pais}}</strong> 
+                <strong>, resumen:</strong> {{tes.patente.resumen_patente |truncatechars:100}}
+                <strong>,Estado:</strong> {{tes.patente.estado}}
+                <strong>,Fecha:</strong> {{tes.fecha_numero_patente}}
+                <strong>,CIP:</strong> {{tes.patente.clasificacion}}
+              </p>
+            {% endfor %}
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
+{% block sidebar %}
+<nav class="navbar navbar-light" style="background-color: #e3f2fd;">
+
+<div class="container">
+    <div class="row mt-200">
+      <div class="col-md-100 mx-auto">
+      <div style="margin-left:0px;margin-top:200px">
+  <form action=" " method="POST">
+    <h5>Filtros</h5> 
+    Fecha
+    <p>Desde:<input type="date" name="fecha1" value="0" style="width:145px" /> </p>
+    <p>Hasta:<input type="date" name="fecha2" value="0" style="width:145px" /> </p>
+    
+      <p><label for = "id_paises"> Paises: </label></p>
+      <select multiple = "multiple" id = "id_paises" name = "paisel"
+          class = "select-multiple-field">
+          <!--<option value="">---------</option>-->
+          {% for pais in patente|dictsort:"num_pat_pais.pk" %}
+            {% ifchanged %}
+              <option value="{{ pais.num_pat_pais.pk }}">{{ pais.num_pat_pais.desc_pais }}</option>
+            {% endifchanged %}    
+          {% endfor %}
+      </select>
+    </p>
+    <input type="submit" value="Filtrar">
+    {% csrf_token %}
+  </form>
+
+{% endblock %}

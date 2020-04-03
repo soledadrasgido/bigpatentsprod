@@ -1,0 +1,264 @@
+<!-- GRAFICO DE CLUSTERING-->
+<script type="text/javascript" src="http://d3js.org/d3.v3.min.js"></script>
+<script type="text/javascript" src="http://mpld3.github.io/js/mpld3.v0.2.js"></script>
+<style>
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+padding-top: 50px;
+padding-bottom: 20px;
+}
+</style>
+<html>
+<h6>Clustering</h6>
+<div id="fig01">
+{{figure|safe}}</div>
+<hr>
+<!--GRAFICO DE DISTRIBCION GEOGRAFICA TORTA-->
+<head>
+  <!--Load the AJAX API-->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', {'packages':['corechart']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      data.addRows([
+          {% for key in paises %}
+              ['{{key.num_pat_pais_id__desc_pais}}', {{key.num_books}}],
+
+          {% endfor %}
+
+      ]);
+
+      // Set chart options
+      var options = {'title':'Distribución Geografica',
+                      'width':900,
+                      'height':600};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+  </script>
+</head>
+<body>
+  <!--Div that will hold the pie chart-->
+  <div id="chart_div"></div>
+</body>
+<hr>
+<!--GRAFICO DE DISTRIBCION GEOGRAFICA BARRAS-->
+<head>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {'packages':['bar']});
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ['Paises', 'Cantidad de Patentes'],
+    {% for key in paises %}
+              ['{{key.num_pat_pais_id__desc_pais}}', {{key.num_books}}],
+
+          {% endfor %}
+        
+      ]);
+
+      var options = {
+        chart: {
+          title: 'Distribución Geografica',
+
+        },
+        bars: 'horizontal' // Required for Material Bar Charts.
+      };
+
+      var chart = new google.charts.Bar(document.getElementById('barchart_material'));
+
+      chart.draw(data, google.charts.Bar.convertOptions(options));
+    }
+  </script>
+</head>
+<body>
+  <div id="barchart_material" style="width: 900px; height: 500px;"></div>
+</body>
+<hr>
+<!--GRAFICO DE DISTRIBCION GEOGRAFICA MAPA-->
+<head>
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load('current', {
+      'packages':['geochart'],
+      // Note: you will need to get a mapsApiKey for your project.
+      // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+      'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+    });
+    google.charts.setOnLoadCallback(drawRegionsMap);
+
+    function drawRegionsMap() {
+      var data = google.visualization.arrayToDataTable([
+        ['Country', 'Patentes'],
+        {% for key in paises %}
+          
+              ['{{key.num_pat_pais_id__desc_pais}}', {{key.num_books}}],
+              
+              {% if key.num_pat_pais_id__desc_pais == 'European Patents'%}
+                ['Albania',{{key.num_books}}],
+                ['Austria',{{key.num_books}}],
+                ['Belgium',{{key.num_books}}],
+                ['Bulgaria',{{key.num_books}}],
+                ['Croatia',{{key.num_books}}],
+                ['Cyprus',{{key.num_books}}],
+                ['Czech Republic',{{key.num_books}}],
+                ['Denmark',{{key.num_books}}],
+                ['Estonia',{{key.num_books}}],
+                ['Finland',{{key.num_books}}],
+                ['France',{{key.num_books}}],
+                ['Germany',{{key.num_books}}],
+                ['Greece',{{key.num_books}}],
+                ['Hungary',{{key.num_books}}],
+                ['Iceland',{{key.num_books}}],
+                ['Ireland',{{key.num_books}}],
+                ['Italy',{{key.num_books}}],
+                ['Latvia',{{key.num_books}}],
+                ['Liechtenstein',{{key.num_books}}],
+                ['Lithuania',{{key.num_books}}],
+                ['Luxembourg',{{key.num_books}}],
+                ['Macedonia',{{key.num_books}}],
+                ['Malta',{{key.num_books}}],
+                ['Monaco',{{key.num_books}}],
+                ['Netherlands',{{key.num_books}}],
+                ['Norway, Poland',{{key.num_books}}],
+                ['Portugal',{{key.num_books}}],
+                ['Romania',{{key.num_books}}],
+                ['San Marino',{{key.num_books}}],
+                ['Serbia',{{key.num_books}}],
+                ['Slovakia',{{key.num_books}}],
+                ['Slovenia',{{key.num_books}}],
+                ['Spain',{{key.num_books}}],
+                ['Sweden',{{key.num_books}}],
+                ['Switzerland',{{key.num_books}}],
+                ['Turkey',{{key.num_books}}],
+                ['United Kingdom',{{key.num_books}}]
+              {% endif %}
+              /*{% if key.num_pat_pais_id__desc_pais == 'WIPO'%}
+                ['Afghanistan',{{key.num_books}}],
+                ['Albania',{{key.num_books}}],
+                ['Algeria',{{key.num_books}}],
+                ['Andorra',{{key.num_books}}],
+                ['Angola',{{key.num_books}}],
+                ['Antigua and Barbuda',{{key.num_books}}],
+                ['Azerbaijan',{{key.num_books}}],
+                ['Argentina',{{key.num_books}}],
+                ['Armenia',{{key.num_books}}],
+                ['Australia',{{key.num_books}}],
+                ['Austria',{{key.num_books}}]
+              {% endif %}*/
+
+
+          {% endfor %}
+      ]);
+
+      var options = {};
+
+      var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+      chart.draw(data, options);
+    }
+  </script>
+</head>
+<body>
+  <div id="regions_div" style="width: 900px; height: 500px;"></div>
+</body>
+</html>
+<!--GRAFICO DE ANALISIS CRONOLOGICO CURVAS-->
+  <html>
+  <head>
+    <hr>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Año', 'Patente'],
+          {% for key in fechas %}
+              ['{{key.fecha_numero_patente__year}}', {{key.num_patentes}}],
+
+          {% endfor %}
+        ]);
+
+        var options = {
+          title: 'Análisis Cronológico',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+  </body>
+
+<!--GRAFICO DE TIPO DE DOCUMENTO TORTA-->
+<head>
+  <!--Load the AJAX API-->
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', {'packages':['corechart']});
+
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
+
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+    function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      data.addRows([
+          {% for key in tipodoc %}
+              ['{{key.estado__desc_estado}}', {{key.num_tipo}}],
+
+          {% endfor %}
+
+      ]);
+
+      // Set chart options
+      var options = {'title':'Tipo de documento',
+                      'width':900,
+                      'height':600};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div1'));
+      chart.draw(data, options);
+    }
+  </script>
+</head>
+<body>
+  <!--Div that will hold the pie chart-->
+  <div id="chart_div1"></div>
+</body>
+<hr>
+</html>

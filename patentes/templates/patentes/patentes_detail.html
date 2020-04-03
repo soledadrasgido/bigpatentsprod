@@ -1,0 +1,50 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{patentes.titulo_patente}}{% endblock %}
+{% block main-content %}
+{% include 'projects/includes/projects_menu.html' %}
+<main role="main">
+  <div class="container">
+    <div class="row mt-3">
+      <div class="col-md-9 mx-auto">
+        <h2 class="section-heading mb-4">{{patentes.titulo_patente}}</h2>
+        <div>
+          {{patentes.resumen_patente|safe}}
+          <div style="margin-left:20px;margin-top:20px">
+              <hr>
+               <p class="text-muted">
+               <div><strong>Claims:</strong>  {{patentes.claims_patente}}</div>
+               <div><strong>Nro:</strong>
+               {% for num in patentes.numerospatentes_set.select_related%}
+                {{num.num_pat_pais.cod_pais}}{{num.cod_serie_patente}} | {{num.tipo_numero.nombre_tipo_numero}} 
+                | {{num.fecha_numero_patente}}</div>
+               {% endfor %}
+              
+              {% for invsol in patentes.patinvsol_set.select_related%}
+                {% if invsol.tipo_pat_inv_sol == "I" %}
+                  
+                  <div><strong>Inventor:</strong>  {{invsol.inventor_solicitante.nombre_inventor_solicitante}}</strong> </div>
+                {%else %}  
+                  <div><strong>Solicitante:</strong>  {{invsol.inventor_solicitante.nombre_inventor_solicitante}}</strong> </div>
+                {% endif %}
+              
+               {% endfor %}
+              <div><strong>Estado:</strong> {{patentes.estado}}</div>
+              <div><strong>CIP:</strong> {{patentes.clasificacion}}</div>
+              {% for repo in patentes.patentesrepositorios_set.select_related%}
+              <div><strong>Link:</strong>  {{repo.link_patente_repositorio}}</strong> </div>
+               {% endfor %}
+              {% for cate in patentes.patentecatvt_set.select_related%}
+              <div><strong>Categorias:</strong>  {{cate.categoria_vt_id_categoria_vt.nombre_categoria_vt}}</strong> </div>
+               {% endfor %}
+
+                
+              </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock %}
